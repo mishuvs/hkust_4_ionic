@@ -1,0 +1,32 @@
+<ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">Login</h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeRatingForm()">Close</button>
+    </div>
+  </ion-header-bar>
+	<ion-content>	
+	<form role="form" class="form-horizontal" name="ratingForm" ng-submit="submitComment()" novalidate>
+		<div class="list">
+			
+			<label for="name" class="item item-input item-select">
+			<span class="input-label">Rating</span><select ng-model="rating.rating">
+                        <option name="rating" id="rating">1</option>
+                        <option name="rating" id="rating">2</option>
+						<option name="rating" id="rating">3</option>
+                        <option name="rating" id="rating">4</option>
+						<option name="rating" id="rating">5</option>
+				</select>
+			</label>
+			
+			<label class="item item-input" for="name"><span class="input-label">Your name</span>
+			<input name="name" id="name" type="text" class="form-control" ng-model="rating.author" required></label>
+
+			<label for="comment" class="item item-input"><span class="input-label">Your comment</span>
+				<input name="comment" id="comment" type="text" class="form-control" ng-model="rating.comment" required>
+			</label>
+		</div>
+		<button class="button button-block button-positive">Submit</button>
+	</form>
+	</ion-content>
+</ion-modal-view>
