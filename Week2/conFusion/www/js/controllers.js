@@ -124,7 +124,7 @@ angular.module('conFusion.controllers', [])
             };
         }])
 
-        .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', 'baseURL', function($scope, $stateParams, menuFactory, baseURL) {
+        .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicPopover', '$ionicListDelegate', '$ionicModal', function($scope, $stateParams, menuFactory, favoriteFactory, baseURL, $ionicPopover, $ionicListDelegate, $ionicModal) {
             $scope.baseURL = baseURL;
             $scope.dish = {};
             $scope.showDish = false;
@@ -140,25 +140,51 @@ angular.module('conFusion.controllers', [])
                                 $scope.message = "Error: "+response.status + " " + response.statusText;
                             }
             );
+            
+		  $ionicPopover.fromTemplateUrl('templates/dish-detail-popover.html', {
+			scope: $scope
+		  }).then(function(popover) {
+		$scope.popover = popover;
+		  });
+            
+            $scope.openPopover = function($event){
+                $scope.popover.show($event);
+            };
+			
+			$scope.addFavorite = function (index) {
+                console.log("index is " + index);
+                favoriteFactory.addToFavorites(index);
+				$scope.popover.hide();
+    }
 
-            
-        }])
+		  // Create the login modal that we will use later
+		  $ionicModal.fromTemplateUrl('templates/dish-comment.html', {
+			scope: $scope
+		  }).then(function(modal) {
+			$scope.modal = modal;
+		  });
 
-        .controller('DishCommentController', ['$scope', 'menuFactory', function($scope,menuFactory) {
-            
-            $scope.mycomment = {rating:5, comment:"", author:"", date:""};
-            
-            $scope.submitComment = function () {
-                
-                $scope.mycomment.date = new Date().toISOString();
-                console.log($scope.mycomment);
-                
-                $scope.dish.comments.push($scope.mycomment);
-        menuFactory.getDishes().update({id:$scope.dish.id},$scope.dish);
-                
-                $scope.commentForm.$setPristine();
-                
-                $scope.mycomment = {rating:5, comment:"", author:"", date:""};
+		  // Triggered in the login modal to close it
+		  $scope.closeRatingForm = function() {
+			$scope.modal.hide();
+			  $scope.popover.hide();
+		  };
+
+		  // Open the login modal
+		  $scope.showRatingForm = function() {
+				$scope.modal.show();
+				$scope.rating = {rating:"", comment:"", author:"", date:""};
+		  };
+
+		  // Perform the login action when the user submits the login form
+          $scope.submitComment = function () {
+			  
+                $scope.rating.date = new Date().toISOString();
+                console.log($scope.rating);
+				$scope.dish.comments.push($scope.rating);				menuFactory.getDishes().update({id:$scope.dish.id},$scope.dish);
+			  
+                $scope.modal.remove();
+			  $scope.popover.hide();
             }
         }])
 
